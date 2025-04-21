@@ -1,19 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Bot Daytrade</title>
+  <meta charset="UTF-8">
+  <title>Bot Daytrade Online</title>
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 30px;
+      color: #333;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+    }
+
+    form {
+      margin-bottom: 30px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      margin: 5px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    h3 {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+      color: #444;
+    }
+
+    .log-box {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .log-box li {
+      margin-bottom: 8px;
+    }
+
+    .timestamp {
+      color: #888;
+    }
+
+    .status {
+      font-weight: bold;
+      color: green;
+    }
+  </style>
 </head>
-<body style="font-family: Arial; padding: 20px;">
-    <h1>Bot Daytrade Online</h1>
-    <form method="POST">
-        <button name="acao" value="iniciar">Iniciar</button>
-        <button name="acao" value="parar">Parar</button>
-    </form>
-    <h3>Log de Operações:</h3>
+<body>
+  <h1>Bot Daytrade Online</h1>
+
+  <form method="POST">
+    <button name="acao" value="iniciar">Iniciar</button>
+    <button name="acao" value="parar">Parar</button>
+  </form>
+
+  <h3>Log de Operações:</h3>
+  <div class="log-box">
     <ul>
-        {% for hora, msg in log %}
-            <li>[{{ hora }}] {{ msg }}</li>
-        {% endfor %}
+      {% for hora, msg in log %}
+        <li><span class="timestamp">[{{ hora }}]</span> <span class="status">{{ msg }}</span></li>
+      {% endfor %}
     </ul>
+  </div>
 </body>
 </html>
