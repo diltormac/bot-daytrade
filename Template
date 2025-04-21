@@ -1,52 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Painel Bot IQ Option</title>
-  <style>
-    body {
-      background-color: #111;
-      color: #0f0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-    .log {
-      background-color: #222;
-      border: 1px solid #444;
-      padding: 10px;
-      margin-top: 20px;
-      width: 100%;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    button {
-      background-color: #0f0;
-      color: #000;
-      font-weight: bold;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0c0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Teste do Template</title>
 </head>
-<body>
-  <h1>Bot Day Trade - Painel</h1>
-  <form method="POST">
-    <button type="submit" name="acao" value="iniciar">Iniciar Bot</button>
-    <button type="submit" name="acao" value="parar">Parar Bot</button>
-  </form>
-
-  <div class="log">
-    <h3>Log:</h3>
-    {% for item in log_operacoes %}
-      <p>{{ item }}</p>
-    {% endfor %}
-  </div>
+<body style="background-color: black; color: lime; font-family: Arial, sans-serif; text-align: center; padding: 100px;">
+    <h1>*** FUNCIONOU! ***</h1>
+    <p>Se você está vendo essa mensagem, o template foi carregado corretamente!</p>
 </body>
 </html>
