@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bot Daytrade</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+    <h1>Bot Daytrade Online</h1>
+    <form method="POST">
+        <button name="acao" value="iniciar">Iniciar</button>
+        <button name="acao" value="parar">Parar</button>
+    </form>
+    <h3>Log de Operações:</h3>
+    <ul>
+        {% for hora, msg in log %}
+            <li>[{{ hora }}] {{ msg }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
