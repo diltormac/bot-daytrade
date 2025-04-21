@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Bot Day Trade</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #111; color: #f0f0f0; font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #0f0; }
+        .controle input, .controle select, button { padding: 10px; margin: 5px; font-size: 14px; }
+        .iniciar { background-color: #28a745; color: white; border: none; border-radius: 5px; }
+        .parar { background-color: #dc3545; color: white; border: none; border-radius: 5px; }
+        .log { background-color: #1e1e1e; padding: 10px; border-radius: 5px; margin-top: 20px; }
+        .log p { margin: 5px 0; border-bottom: 1px solid #333; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Painel do Bot</h1>
+
+    <p><strong>Saldo atual:</strong> ${{ saldo }}</p>
+    <p><strong>Lucro do dia:</strong> ${{ lucro_dia }}</p>
+
+    <form method="POST" class="controle">
+        <input type="number" name="valor_operacao" step="0.01" placeholder="Valor da operação" required>
+        <select name="ativo">
+            <option value="EURUSD">EURUSD</option><option value="GBPUSD">GBPUSD</option><option value="USDJPY">USDJPY</option>
+            <option value="AUDUSD">AUDUSD</option><option value="EURJPY">EURJPY</option><option value="USDCHF">USDCHF</option>
+            <option value="NZDUSD">NZDUSD</option><option value="EURGBP">EURGBP</option><option value="GBPJPY">GBPJPY</option>
+            <option value="EURAUD">EURAUD</option><option value="USDCAD">USDCAD</option><option value="GBPCHF">GBPCHF</option>
+            <option value="BTCUSD">BTCUSD</option><option value="ETHUSD">ETHUSD</option><option value="GOLD">GOLD</option>
+        </select>
+        <select name="expiracao">
+            <option value="1">1 minuto</option>
+            <option value="3">3 minutos</option>
+            <option value="5">5 minutos</option>
+        </select>
+        <select name="modo_operacao">
+            <option value="normal">Modo Normal</option>
+            <option value="agressivo">Modo Agressivo</option>
+            <option value="martingale2">Martingale x2</option>
+            <option value="martingale3">Martingale x3</option>
+        </select>
+        <button class="iniciar" name="acao" value="iniciar">Iniciar</button>
+        <button class="parar" name="acao" value="parar">Parar</button>
+    </form>
+
+    <div>
+        <canvas id="grafico" width="400" height="150"></canvas>
+    </div>
+
+    <div class="log">
+        <h2>Log de Operações</h2>
+        {% for item in log_operacoes %}
+            <p>{{ item }}</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        const ctx = document.getElementById('grafico').getContext('2d');
+        const grafico = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Vitórias', 'Derrotas', 'Saldo do Dia'],
+                datasets: [{
+                    label: 'Desempenho',
+                    data: [{{ vitorias }}, {{ derrotas }}, {{ lucro_dia }}],
+                    backgroundColor: ['#28a745', '#dc3545', '#17a2b8']
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+</body>
+</html>
