@@ -1,46 +1,55 @@
-from flask import Flask, render_template, request, redirect
-from iqbot import IQBot
-from datetime import datetime
-import os
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Bot Day Trade</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #0f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+        }
+        h1 {
+            color: #0f0;
+        }
+        button {
+            background-color: #0f0;
+            color: #000;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .log {
+            background-color: #222;
+            border: 1px solid #444;
+            padding: 10px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bot Day Trade - Painel</h1>
 
-app = Flask(__name__)
-bot = None
-log_operacoes = []
+    <form method="POST">
+        <button type="submit" name="acao" value="iniciar">Iniciar Bot</button>
+        <button type="submit" name="acao" value="parar">Parar Bot</button>
+    </form>
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    global bot
-
-    if request.method == "POST":
-        acao = request.form.get("acao")
-
-        if acao == "iniciar":
-            if not bot:
-                email = os.getenv("IQ_EMAIL", "dilsontm@gmail.com")  # fallback
-                senha = os.getenv("IQ_SENHA", "alana2011")
-                bot = IQBot(email, senha)
-                try:
-                    saldo = bot.conectar()
-                    resultado = f"✅ Bot conectado | Saldo demo: ${saldo:,.2f}"
-                except Exception as e:
-                    resultado = f"❌ Erro ao conectar: {str(e)}"
-            else:
-                resultado = "⚠️ Bot já está conectado."
-
-        elif acao == "parar":
-            if bot:
-                bot.desconectar()
-                bot = None
-                resultado = "⛔ Bot desconectado"
-            else:
-                resultado = "⚠️ Bot já está desconectado."
-
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        log_operacoes.insert(0, f"{timestamp} – {resultado}")
-
-        return redirect("/")
-
-    return render_template("index.html", log_operacoes=log_operacoes)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+    <div class="log">
+        <h3>Log:</h3>
+        {% for item in log_operacoes %}
+            <p>{{ item }}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
