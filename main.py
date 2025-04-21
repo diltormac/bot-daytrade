@@ -4,7 +4,7 @@ import random
 
 app = Flask(__name__)
 
-# Variáveis do bot
+# VariÃ¡veis do bot
 status_bot = "Aguardando..."
 vitorias = 0
 derrotas = 0
@@ -19,11 +19,11 @@ def index():
     if request.method == "POST":
         acao = request.form.get("acao")
         if acao == "iniciar":
-            status_bot = "✅ Bot Iniciado"
+            status_bot = "âœ… Bot Iniciado"
         elif acao == "parar":
-            status_bot = "⛔ Bot Parado"
+            status_bot = "â›” Bot Parado"
         else:
-            status_bot = "⚠️ Ação inválida"
+            status_bot = "âš ï¸ AÃ§Ã£o invÃ¡lida"
 
         # Simula o resultado (para testes)
         if random.choice([True, False]):
@@ -45,4 +45,5 @@ def index():
                            log=log_operacoes)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=10000)
