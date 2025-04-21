@@ -1,49 +1,44 @@
 from flask import Flask, render_template, request, redirect
+from iqbot import IQBot
 from datetime import datetime
-import random
+import os
 
 app = Flask(__name__)
-
-# VariÃ¡veis do bot
-status_bot = "Aguardando..."
-vitorias = 0
-derrotas = 0
-modo_operacao = "Normal"
-nivel_martingale = 0
+bot = None
 log_operacoes = []
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global status_bot, vitorias, derrotas, modo_operacao, nivel_martingale, log_operacoes
+    global bot
 
     if request.method == "POST":
         acao = request.form.get("acao")
+
         if acao == "iniciar":
-            status_bot = "âœ… Bot Iniciado"
+            if not bot:
+                bot = IQBot(os.environ.get("dilsontm@gmail.com"), os.environ.get("alana2011"))
+                try:
+                    saldo = bot.conectar()
+                    resultado = f"✅ Bot conectado | Saldo demo: ${saldo:,.2f}"
+                except Exception as e:
+                    resultado = f"❌ Erro ao conectar: {str(e)}"
+            else:
+                resultado = "⚠️ Bot já está conectado."
+
         elif acao == "parar":
-            status_bot = "â›” Bot Parado"
-        else:
-            status_bot = "âš ï¸ AÃ§Ã£o invÃ¡lida"
+            if bot:
+                bot.desconectar()
+                bot = None
+                resultado = "⛔ Bot desconectado"
+            else:
+                resultado = "⚠️ Bot já está desconectado."
 
-        # Simula o resultado (para testes)
-        if random.choice([True, False]):
-            vitorias += 1
-            nivel_martingale = 0
-        else:
-            derrotas += 1
-            nivel_martingale += 1
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        log_operacoes.insert(0, f"{timestamp} – {resultado}")
 
-        log_operacoes.append((datetime.now().strftime("%H:%M:%S"), status_bot))
         return redirect("/")
 
-    return render_template("index.html",
-                           status=status_bot,
-                           wins=vitorias,
-                           losses=derrotas,
-                           modo=modo_operacao,
-                           nivel=nivel_martingale,
-                           log=log_operacoes)
+    return render_template("index.html", log_operacoes=log_operacoes)
 
 if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
