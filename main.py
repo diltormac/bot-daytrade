@@ -15,7 +15,7 @@ def index():
 
         if acao == "iniciar":
             if not bot:
-                bot = IQBot("dilsontm@gmail.com", "alana2011")  # Email e senha fixos só para testes
+                bot = IQBot("dilsontm@gmail.com", "alana2011")
                 try:
                     saldo = bot.conectar()
                     resultado = f"✅ Bot conectado | Saldo demo: ${saldo:,.2f}"
@@ -34,10 +34,9 @@ def index():
 
         timestamp = datetime.now().strftime("%H:%M:%S")
         log_operacoes.insert(0, f"{timestamp} – {resultado}")
-
         return redirect("/")
 
     return render_template("index.html", log_operacoes=log_operacoes)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)...
+    app.run(host="0.0.0.0", port=10000)
