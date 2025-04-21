@@ -2,22 +2,18 @@ from flask import Flask, render_template, request, redirect
 from datetime import datetime
 
 app = Flask(__name__)
+
+# Variáveis do bot
+status_bot = "Aguardando..."
+vitorias = 0
+derrotas = 0
+modo_operacao = "Normal"
+nivel_martingale = 0
 log_operacoes = []
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global log_operacoes
-    if request.method == "POST":
-        acao = request.form.get("acao")
-        if acao == "iniciar":
-            resultado = "✅ Bot Iniciado"
-        elif acao == "parar":
-            resultado = "⛔ Bot Parado"
-        else:
-            resultado = "⚠️ Ação inválida"
-        log_operacoes.append((datetime.now().strftime("%H:%M:%S"), resultado))
-        return redirect("/")
-    return render_template("index.html", log=log_operacoes)
+    global status_bot, vitorias, derrotas, modo_operacao, nivel_martingale, log_operacoes
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    if request.method == "POST":
+        acao = request.form.get
