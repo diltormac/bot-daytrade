@@ -1,89 +1,164 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Bot Daytrade Online</title>
-  <style>
-    body {
-      background-color: #f9f9f9;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 30px;
-      color: #333;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2em;
-      color: #1a1a1a;
-      margin-bottom: 20px;
-    }
-
-    form {
-      margin-bottom: 30px;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      margin: 5px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    h3 {
-      font-size: 1.3em;
-      margin-bottom: 10px;
-      color: #444;
-    }
-
-    .log-box {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      max-width: 500px;
-      margin: 0 auto;
-      text-align: left;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .log-box li {
-      margin-bottom: 8px;
-    }
-
-    .timestamp {
-      color: #888;
-    }
-
-    .status {
-      font-weight: bold;
-      color: green;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Day Trade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        body {
+            background-color: #111;
+            color: #fff;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00ffcc;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .card i {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #00ffcc;
+        }
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffcc;
+        }
+        .controls {
+            margin: 30px auto;
+            text-align: center;
+        }
+        button {
+            background-color: #00ffcc;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #00ccaa;
+        }
+        canvas {
+            background-color: #1e1e1e;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Bot Daytrade Online</h1>
+    <h1>Painel do Bot de Day Trade</h1><div class="grid">
+    <div class="card">
+        <i class="ph ph-robot"></i>
+        <h3>Status do Bot</h3>
+        <p id="status">Aguardando...</p>
+    </div>
+    <div class="card">
+        <i class="ph ph-target"></i>
+        <h3>Vitórias</h3>
+        <p id="wins">0</p>
+    </div>
+    <div class="card">
+        <i class="ph ph-x"></i>
+        <h3>Derrotas</h3>
+        <p id="losses">0</p>
+    </div>
+    <div class="card">
+        <i class="ph ph-gear"></i>
+        <h3>Modo</h3>
+        <p id="modo">Normal</p>
+    </div>
+    <div class="card">
+        <i class="ph ph-trend-up"></i>
+        <h3>Martingale</h3>
+        <p id="nivel">Nível 0</p>
+    </div>
+</div>
 
-  <form method="POST">
-    <button name="acao" value="iniciar">Iniciar</button>
-    <button name="acao" value="parar">Parar</button>
-  </form>
+<div class="controls">
+    <form method="post">
+        <button type="submit">Iniciar Bot</button>
+    </form>
+</div>
 
-  <h3>Log de Operações:</h3>
-  <div class="log-box">
-    <ul>
-      {% for hora, msg in log %}
-        <li><span class="timestamp">[{{ hora }}]</span> <span class="status">{{ msg }}</span></li>
-      {% endfor %}
-    </ul>
-  </div>
+<canvas id="chart" width="400" height="200"></canvas>
+
+<script>
+    // Simulação de dados (substituir por atualização real via WebSocket ou fetch)
+    let wins = 0;
+    let losses = 0;
+    let nivel = 0;
+
+    const ctx = document.getElementById('chart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Desempenho',
+                data: [],
+                borderColor: '#00ffcc',
+                borderWidth: 2,
+                tension: 0.3,
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Funções para atualizar as estatísticas (exemplo)
+    function atualizarPainel(resultado) {
+        if (resultado === 'win') wins++;
+        else if (resultado === 'loss') losses++;
+        nivel = (resultado === 'loss') ? nivel + 1 : 0;
+
+        document.getElementById('wins').innerText = wins;
+        document.getElementById('losses').innerText = losses;
+        document.getElementById('nivel').innerText = `Nível ${nivel}`;
+
+        const total = wins + losses;
+        chart.data.labels.push(total);
+        chart.data.datasets[0].data.push(wins - losses);
+        chart.update();
+    }
+
+    // Exemplo de uso (para testes)
+    // setInterval(() => atualizarPainel(Math.random() > 0.5 ? 'win' : 'loss'), 3000);
+</script>
+
 </body>
 </html>
